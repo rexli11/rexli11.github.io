@@ -1,0 +1,304 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>AD 投放成果短片預覽</title>
+  <style>
+    :root {
+      --bg: #101318;
+      --panel: #171b22;
+      --line: #4aa3ff;
+      --accent: #2fe39b;
+      --text: #f5f7fb;
+      --muted: #9ba7b6;
+      --gold: #f2c14e;
+    }
+
+    * { box-sizing: border-box; }
+
+    body {
+      margin: 0;
+      min-height: 100vh;
+      display: grid;
+      place-items: center;
+      background: #0b0e12;
+      color: var(--text);
+      font-family: "Noto Sans TC", "Microsoft JhengHei", Arial, sans-serif;
+    }
+
+    .stage {
+      position: relative;
+      width: min(100vw, 1280px);
+      aspect-ratio: 16 / 9;
+      overflow: hidden;
+      background:
+        linear-gradient(120deg, rgba(74, 163, 255, .14), transparent 40%),
+        radial-gradient(circle at 82% 22%, rgba(47, 227, 155, .12), transparent 28%),
+        var(--bg);
+      isolation: isolate;
+    }
+
+    .grid {
+      position: absolute;
+      inset: 0;
+      background-image:
+        linear-gradient(rgba(255,255,255,.05) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(255,255,255,.05) 1px, transparent 1px);
+      background-size: 72px 72px;
+      opacity: .45;
+      transform: perspective(700px) rotateX(58deg) translateY(120px) scale(1.3);
+      transform-origin: bottom;
+      z-index: -1;
+    }
+
+    .brand {
+      position: absolute;
+      top: 42px;
+      left: 56px;
+      color: var(--muted);
+      font-size: 18px;
+      letter-spacing: 0;
+    }
+
+    .scene {
+      position: absolute;
+      inset: 0;
+      padding: 90px 56px 58px;
+      display: grid;
+      align-content: center;
+      opacity: 0;
+      animation: scene 24s linear infinite;
+    }
+
+    .scene h1,
+    .scene h2 {
+      margin: 0;
+      line-height: 1.05;
+      font-weight: 800;
+      letter-spacing: 0;
+      max-width: 940px;
+    }
+
+    .scene h1 { font-size: 78px; }
+    .scene h2 { font-size: 60px; }
+
+    .scene p {
+      margin: 24px 0 0;
+      max-width: 760px;
+      color: var(--muted);
+      font-size: 26px;
+      line-height: 1.45;
+    }
+
+    .metric {
+      display: flex;
+      align-items: baseline;
+      gap: 18px;
+      margin-top: 14px;
+    }
+
+    .number {
+      color: var(--accent);
+      font-size: 92px;
+      font-weight: 900;
+      line-height: 1;
+      font-variant-numeric: tabular-nums;
+    }
+
+    .unit {
+      color: var(--text);
+      font-size: 28px;
+      font-weight: 700;
+    }
+
+    .chips {
+      display: flex;
+      gap: 16px;
+      flex-wrap: wrap;
+      margin-top: 34px;
+    }
+
+    .chip {
+      border: 1px solid rgba(255,255,255,.14);
+      background: rgba(255,255,255,.06);
+      color: var(--text);
+      padding: 13px 18px;
+      border-radius: 8px;
+      font-size: 22px;
+      font-weight: 700;
+    }
+
+    .funnel {
+      position: absolute;
+      right: 72px;
+      top: 150px;
+      width: 340px;
+      height: 330px;
+    }
+
+    .funnel div {
+      height: 70px;
+      margin: 16px auto;
+      border: 1px solid rgba(255,255,255,.16);
+      background: linear-gradient(90deg, rgba(74,163,255,.24), rgba(47,227,155,.18));
+      display: grid;
+      place-items: center;
+      font-size: 24px;
+      font-weight: 800;
+      clip-path: polygon(8% 0, 92% 0, 82% 100%, 18% 100%);
+    }
+
+    .funnel div:nth-child(2) { width: 78%; }
+    .funnel div:nth-child(3) { width: 56%; }
+
+    .bar {
+      width: min(760px, 68vw);
+      height: 34px;
+      border: 1px solid rgba(255,255,255,.18);
+      background: rgba(255,255,255,.08);
+      border-radius: 6px;
+      overflow: hidden;
+      margin-top: 34px;
+    }
+
+    .bar span {
+      display: block;
+      width: 94%;
+      height: 100%;
+      background: linear-gradient(90deg, var(--accent), var(--gold));
+      animation: fill 4s ease both infinite;
+    }
+
+    .line-chart {
+      position: absolute;
+      right: 68px;
+      bottom: 96px;
+      width: 420px;
+      height: 230px;
+      border-left: 2px solid rgba(255,255,255,.24);
+      border-bottom: 2px solid rgba(255,255,255,.24);
+    }
+
+    .line-chart svg {
+      width: 100%;
+      height: 100%;
+      overflow: visible;
+    }
+
+    .line-chart polyline {
+      fill: none;
+      stroke: var(--accent);
+      stroke-width: 8;
+      stroke-linecap: round;
+      stroke-linejoin: round;
+      stroke-dasharray: 700;
+      stroke-dashoffset: 700;
+      animation: draw 4s ease both infinite;
+    }
+
+    .footer {
+      position: absolute;
+      right: 56px;
+      bottom: 38px;
+      color: var(--muted);
+      font-size: 16px;
+    }
+
+    .s1 { animation-delay: 0s; }
+    .s2 { animation-delay: 4s; }
+    .s3 { animation-delay: 8s; }
+    .s4 { animation-delay: 12s; }
+    .s5 { animation-delay: 16s; }
+    .s6 { animation-delay: 20s; }
+
+    @keyframes scene {
+      0%, 15% { opacity: 0; transform: translateY(24px); }
+      4%, 13% { opacity: 1; transform: translateY(0); }
+      17%, 100% { opacity: 0; transform: translateY(-18px); }
+    }
+
+    @keyframes fill {
+      from { transform: translateX(-100%); }
+      to { transform: translateX(0); }
+    }
+
+    @keyframes draw {
+      to { stroke-dashoffset: 0; }
+    }
+  </style>
+</head>
+<body>
+  <main class="stage" aria-label="AD 投放成果短片預覽">
+    <div class="grid"></div>
+    <div class="brand">AD Performance Case Study</div>
+
+    <section class="scene s1">
+      <h1>某生命禮儀品牌</h1>
+      <h2>Google Ads 投放優化案例</h2>
+      <p>以搜尋意圖與區域需求為核心，重整品牌廣告投放架構。</p>
+    </section>
+
+    <section class="scene s2">
+      <h2>投放架構重整</h2>
+      <div class="chips">
+        <div class="chip">Search</div>
+        <div class="chip">GDN</div>
+        <div class="chip">Google Maps</div>
+      </div>
+      <p>建立從品牌認知到轉換的投放漏斗。</p>
+      <div class="funnel" aria-hidden="true">
+        <div>認知曝光</div>
+        <div>搜尋意圖</div>
+        <div>在地導流</div>
+      </div>
+    </section>
+
+    <section class="scene s3">
+      <h2>精準預算控管</h2>
+      <div class="metric">
+        <div class="number">NT$68,875</div>
+        <div class="unit">年度上限</div>
+      </div>
+      <p>依階段目標調整預算節奏，確保投放紀律與資源效率。</p>
+      <div class="bar"><span></span></div>
+    </section>
+
+    <section class="scene s4">
+      <h2>曝光效率提升</h2>
+      <div class="metric">
+        <div class="number">512,280</div>
+        <div class="unit">月曝光</div>
+      </div>
+      <p>曝光成本約 NT$0.00442 / 次，CPM 約 NT$4.42。</p>
+    </section>
+
+    <section class="scene s5">
+      <h2>流量同步維持</h2>
+      <div class="metric">
+        <div class="number">4,964</div>
+        <div class="unit">入站流量</div>
+      </div>
+      <p>較前月提升約 27.8%，曝光最大化下仍保有有效流量。</p>
+      <div class="line-chart" aria-hidden="true">
+        <svg viewBox="0 0 420 230">
+          <polyline points="20,176 155,143 285,104 392,54"></polyline>
+        </svg>
+      </div>
+    </section>
+
+    <section class="scene s6">
+      <h2>可複製的投放模型</h2>
+      <div class="chips">
+        <div class="chip">策略重整</div>
+        <div class="chip">成本優化</div>
+        <div class="chip">流量維持</div>
+        <div class="chip">評論成長</div>
+      </div>
+      <p>透過資料追蹤與關鍵字策略，建立本地服務業廣告成效優化流程。</p>
+    </section>
+
+    <div class="footer">匿名化版本，已移除客戶、競品、帳戶與內部路徑資訊</div>
+  </main>
+</body>
+</html>
