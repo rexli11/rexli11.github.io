@@ -10,7 +10,8 @@ The digital transformation case study is based on Rex's own brand, so the brand 
 
 ## Files
 
-- `index.html`: AD performance animated case-study page
+- `index.html`: project landing page
+- `ad-performance/index.html`: AD performance animated case-study page
 - `digital-transformation/index.html`: Odie breakfast digital transformation case-study page
 - `assets/ad_campaign_result_short_video.md`: script and storyboard
 - `assets/104_project_video_canva_brief.md`: Canva and 104 resume brief
@@ -34,5 +35,6 @@ Project URLs:
 
 ```text
 https://rexli11.github.io/
+https://rexli11.github.io/ad-performance/
 https://rexli11.github.io/digital-transformation/
 ```
